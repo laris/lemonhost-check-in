@@ -1,0 +1,32 @@
+name: LemonHost Auto Login
+
+on:
+  # 手动触发
+  workflow_dispatch:
+  # 定时触发：每 3 天的 UTC时间 00:00 (北京时间 08:00)
+  schedule:
+    - cron: '0 0 */3 * *'
+
+jobs:
+  login-and-keep-alive:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Selenium
+      run: |
+        pip install selenium
+
+    - name: Run Login Script
+      env:
+        # 引用 GitHub Secrets 中的账号密码
+        EMAIL: ${{ secrets.LEMON_EMAIL }}
+        PASSWORD: ${{ secrets.LEMON_PASSWORD }}
+      run: python main.py
