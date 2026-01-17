@@ -1,175 +1,398 @@
-<div align="center">
+# tgstate-python
 
-# ☁️ tgstate-python
-### 基于 Telegram 的无限私有云存储 & 永久图床系统
-
-[![GitHub stars](https://img.shields.io/github/stars/buyi06/tgstate-python?style=flat-square)](https://github.com/buyi06/tgstate-python/stargazers)
-[![License](https://img.shields.io/github/license/buyi06/tgstate-python?style=flat-square)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/)
-
-<p>
-  <a href="#-核心特性">核心特性</a> •
-  <a href="#-快速部署">快速部署</a> •
-  <a href="#-配置指南">配置指南</a> •
-  <a href="#-常见问题">常见问题</a>
+<p align="center">
+  <b>基于 Telegram 的无限私有云存储 & 永久图床系统</b><br/>
+  将 Telegram 频道/群组瞬间变身为私有网盘与图床：文件管理、外链分享、图片托管，一站式搞定。
 </p>
 
-</div>
+<p align="center">
+  <a href="#-一键脚本推荐">快速开始</a> ·
+  <a href="#%EF%B8%8F-首次配置教程">首次配置</a> ·
+  <a href="#-反向代理说明-caddynignx">反向代理</a> ·
+  <a href="#-常见问题排查">常见问题</a> ·
+  <a href="#-功能特性">功能特性</a> ·
+  <a href="#-免责声明与合规使用重要">免责声明</a>
+</p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.11%2B-blue" />
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-required-2496ED" />
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-green" />
+</p>
 
 ---
 
-## 📖 项目简介
+## ✨ 项目简介
 
-**tgstate-python** 将您的 Telegram 频道或群组瞬间变身为功能强大的私有网盘与图床。无需服务器存储空间，借助 Telegram 的无限云端能力，实现文件管理、外链分享、图片托管与流媒体播放。
+**tgstate-python** 利用 Telegram 的云端能力实现“无限容量”的个人文件管理与分享系统：
 
----
+- **无限存储**：文件落地到你自己的 Telegram 频道/群组（不占服务器硬盘）
+- **外链分享**：生成短链接（`/d/AbC123`），可直接下载/预览
+- **图床托管**：一键复制 Markdown/HTML 链接，适配 PicGo
+- **Web 管理**：拖拽上传、列表管理、权限保护
 
-## ✨ 核心特性
-
-| 功能 | 说明 |
-| :--- | :--- |
-| ♾️ **无限存储** | 依赖 Telegram 频道机制，容量无上限，零成本扩展。 |
-| 🔗 **智能外链** | 生成简洁短链 (`/d/AbC123`)，自动适配当前访问域名/IP。 |
-| ⚡ **极速上传** | 支持批量拖拽上传，大文件自动分块，体验丝滑。 |
-| 🖼️ **图床模式** | 专为 Markdown/HTML 优化，支持 PicGo，一键复制引用。 |
-| 🔒 **隐私安全** | 数据存储于私有频道，Web 端支持密码保护，安全可控。 |
-| 📺 **流式播放** | 完美支持 HTTP Range，实现视频拖动进度条与断点续传。 |
+> ⚠️ 注意：本项目定位为 **个人学习/私用工具**，请阅读文末免责声明与合规说明。
 
 ---
 
-## 🚀 快速部署
+## 🚀 一键脚本（推荐）
 
-推荐使用一键脚本进行管理，支持安装、更新与维护。
+> 💡 脚本执行时会提示输入端口（回车默认 `8000`）。  
+> 也可通过环境变量跳过交互：`PORT=15767 BASE_URL=https://...`
 
-### 1. 安装与更新 (推荐)
-保留数据，适用于首次安装或版本更新。
+### 1) 一键安装 / 一键更新（保留数据，推荐）
 ```bash
-bash -lc 'bash <(curl -fsSL [https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/install.sh](https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/install.sh))'
+bash -lc 'bash <(curl -fsSL https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/install.sh)'
 
-2. 重建容器
-保留数据，仅重置运行环境，专治容器异常。
-bash -lc 'bash <(curl -fsSL [https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/reset.sh](https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/reset.sh))'
+2) 一键重建容器（保留数据，专治容器跑飞）
 
-3. 彻底卸载
-⚠️ 高危操作：这将清空所有配置与数据，不可逆。
-bash -lc 'bash <(curl -fsSL [https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/purge.sh](https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/purge.sh))'
+bash -lc 'bash <(curl -fsSL https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/reset.sh)'
 
-> 💡 提示：脚本默认端口为 8000。如需非交互式安装，可预设环境变量：
-> PORT=15767 BASE_URL=https://pan.example.com bash -lc ...
-> 
-⚙️ 配置指南
-部署后首次访问网页将进入引导页设置管理员密码。之后请进入 “系统设置” 完成以下核心配置。
-第一步：获取 BOT_TOKEN
- * 打开 Telegram 搜索 @BotFather 并点击 Start。
- * 发送 /newbot 创建新机器人。
- * 按提示输入机器人名称与用户名（必须以 bot 结尾）。
- * 获取 HTTP API Token，即为 BOT_TOKEN。
-第二步：获取 Chat ID (CHANNEL_NAME)
- * 新建频道/群组：建议新建一个私密频道用于存储文件。
- * 添加管理员：将上一步创建的机器人拉入频道，并给予管理员权限（需有发消息权限）。
- * 获取 ID：
-   * 在频道内发送任意文本消息。
-   * 浏览器访问：https://api.telegram.org/bot<您的Token>/getUpdates
-   * 在返回的 JSON 中找到 chat -> id（通常以 -100 开头）。
-   * 注：如果是公开频道，也可以直接填写频道用户名（如 @my_channel）。
-第三步：系统填报
-回到网页端“系统设置”：
- * BOT_TOKEN: 填入第一步获取的 Token。
- * CHANNEL_NAME: 填入第二步获取的 Chat ID。
- * BASE_URL (可选): 您的对外访问域名（如 https://pan.example.com）。
-🌐 反向代理设置
-为获得最佳体验（如剪贴板复制、HTTPS），建议配合 Nginx 或 Caddy 使用。
-<details>
-<summary><strong>展开查看 Caddy 配置示例</strong></summary>
+3) 一键彻底清理（清空数据，不可逆）
+
+bash -lc 'bash <(curl -fsSL https://raw.githubusercontent.com/buyi06/tgstate-python/main/scripts/purge.sh)'
+
+
+---
+
+⚙️ 首次配置教程
+
+部署后首次访问 Web，会进入 引导页 设置管理员密码。
+完成后进入 系统设置 填写核心配置。
+
+
+---
+
+Step 1：获取 BOT_TOKEN
+
+1. Telegram 搜索并打开 @BotFather，点击“开始”
+
+
+2. 发送 /newbot
+
+
+3. 按提示输入 Name 与 Username（用户名必须以 bot 结尾）
+
+
+4. BotFather 回复中的
+Use this token to access the HTTP API:
+下方那串字符即为 BOT_TOKEN
+
+
+
+
+---
+
+Step 2：获取 Chat ID（CHANNEL_NAME）
+
+1) 准备频道/群组
+
+新建一个频道或群组（公开/私密均可）
+
+关键：把机器人拉进去并设置为管理员（确保可读/可发）
+
+
+2) 获取 ID
+
+在群/频道里随便发一条文本消息
+
+浏览器访问： https://api.telegram.org/bot<你的Token>/getUpdates
+
+将 <你的Token> 替换为真实 BOT_TOKEN
+
+
+在返回 JSON 中找到：chat.id
+
+通常以 -100 开头，例如 -1001234567890
+
+
+
+3) 公开频道的替代写法
+
+如果是公开频道，也可以直接填：@my_channel_name
+
+
+> 💡 若 getUpdates 返回空（"result": []），通常是以下原因之一：
+
+消息没触发到 bot：多发几条消息再试
+
+Group Privacy 开着：到 @BotFather → /mybots → 选择机器人 → Bot Settings → Group Privacy → Turn off
+
+
+
+
+
+---
+
+Step 3：填写系统设置
+
+进入 Web 的 系统设置，按下面填写：
+
+BOT_TOKEN：Step 1 获得
+
+CHANNEL_NAME：Step 2 获得（推荐数字 ID）
+
+BASE_URL（可选）：用于对外分享的域名或 IP
+
+示例：http://1.2.3.4:8000 或 https://pan.example.com
+
+说明：不填也能自动生成可用分享链接；若使用反向代理，为了 Bot 回复链接更准确，建议填写
+
+
+
+保存后即可开始使用。
+
+
+---
+
+🌐 反向代理说明 (Caddy/Nginx)
+
+1) Cookie 与 HTTPS
+
+系统已优化 Cookie 策略，可在 HTTP(IP:Port) 与 HTTPS 环境下自动适配。
+若反代层开启 HTTPS，请确保请求头正确透传。
+
+
+---
+
+2) Caddy 配置示例
+
 buyi.us.ci {
     encode gzip
     reverse_proxy 127.0.0.1:8000
 }
 
-</details>
-<details>
-<summary><strong>展开查看 Nginx 配置示例</strong></summary>
-请务必透传 Host 与 X-Forwarded-* 头信息：
+
+---
+
+3) Nginx 配置示例（推荐透传 Host 与 X-Forwarded-*）
+
 location / {
-    proxy_pass [http://127.0.0.1:8000](http://127.0.0.1:8000);
+    proxy_pass http://127.0.0.1:8000;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 
-</details>
-🛠️ 高级功能验证 (API & Headers)
-系统对 Content-Disposition 和 Range 请求提供了企业级支持。
-核心行为逻辑
- * 智能预览：图片、PDF、代码等默认 inline 预览。
- * 强制下载：链接附加 ?download=1 强制返回 attachment。
- * 流媒体支持：视频/音频响应 206 Partial Content，支持拖拽播放。
-一键验收脚本
-在 Linux/macOS 终端运行以下命令，验证服务器响应头是否合规：
-<details>
-<summary><strong>点击复制验收脚本</strong></summary>
+
+---
+
+❓ 常见问题排查
+
+Q1：登录后跳回登录页 / 无法登录 / 500 错误
+
+密码字符支持：已修复 Cookie 存储问题，支持中文/空格/Emoji 等任意强密码
+
+500 Internal Server Error：多见于旧版本未正确处理特殊字符 Cookie
+
+处理方式：清除浏览器 Cookie 或使用无痕模式
+
+
+
+排查与重置：
+
+查看日志：
+
+docker logs tgstate --tail 200
+
+重置数据卷（⚠️ 会清空所有数据）：
+
+docker rm -f tgstate; docker volume rm tgstate-data; docker volume create tgstate-data
+
+
+补充检查：
+
+设置密码时系统会自动去除首尾空格，请确认输入一致
+
+IP 访问时请确认浏览器未禁用 Cookie（可点地址栏图标查看 Cookie 是否写入）
+
+高级重置：可删除 data/file_metadata.db 中 app_settings 表记录（需要懂 SQL），或删除数据库文件（会丢失索引，不推荐）
+
+
+
+---
+
+Q2：退出登录点击无反应或报错
+
+退出登录使用 JS 弹窗确认，请确保页面 JS 正常加载（浏览器控制台无报错）
+
+如提示网络错误，刷新页面重试
+
+
+
+---
+
+Q3：复制链接失败
+
+非 HTTPS（HTTP IP 访问）可能被浏览器限制剪贴板 API
+
+系统已内置回退：自动复制失败会弹窗显示链接供手动复制
+
+建议启用 HTTPS 反代以获得最佳体验
+
+
+
+---
+
+Q4：删除文件后列表不刷新
+
+删除为异步操作，偶发网络延迟
+
+刷新页面即可；若仍存在，多为删除失败（常见原因：Bot 权限不足/非管理员）
+
+
+
+---
+
+Q5：分享链接是 127.0.0.1
+
+前端会根据“你当前访问页面的地址”自动生成分享链接
+
+若你通过 127.0.0.1 访问，生成的自然也是 127.0.0.1
+
+用公网 IP 或域名访问即可自动变更为对应地址
+
+
+
+---
+
+📂 功能特性
+
+无限存储：依赖 Telegram 频道/群组，容量无上限
+
+短链接分享：/d/AbC123，自动适配当前访问域名
+
+拖拽上传：支持批量拖拽上传，大文件自动分块
+
+图床模式：Markdown/HTML 一键复制，适配 PicGo
+
+隐私安全：文件落在你的私有频道；Web 支持密码保护
+
+
+
+---
+
+📺 在线预览 / 强制下载 / Range 说明（验收命令）
+
+系统对分享链接（/d/{id}）提供了智能的 Content-Disposition 与流式支持：
+
+1. 默认策略
+
+可预览类型（图片/PDF/文本/代码/音视频）：Content-Disposition: inline
+
+不可预览类型（压缩包/二进制等）：Content-Disposition: attachment
+
+
+
+2. 强制下载
+
+链接追加 ?download=1（例如 /d/GNW2KH?download=1）
+无论类型一律返回 attachment
+
+
+
+3. Range 支持（音视频）
+
+对 video/*、audio/* 支持 HTTP Range
+
+返回 206 Partial Content、Accept-Ranges: bytes、Content-Range
+
+支持播放器拖动进度条与断点续传
+
+
+
+4. HEAD 支持
+
+支持 HEAD，返回与 GET 一致的关键 Headers（大小/类型等）
+
+
+
+5. 浏览器兼容性提示
+
+不同浏览器对 PDF/视频编码（HEVC/MKV）支持不同
+
+预览失败时可用 ?download=1 下载或更换 Chrome/Edge
+
+
+
+
+
+---
+
+🚀 一键验收命令
+
+在 Linux/macOS 终端运行，验证响应头是否符合预期（替换 BASE_URL 与 ID）：
+
 bash -lc '
 set -euo pipefail
-# 请修改为您自己的域名和文件ID
-BASE="${BASE_URL:-[https://pan.777256.xyz](https://pan.777256.xyz)}"
+# 请修改为你自己的域名和文件ID
+BASE="${BASE_URL:-https://pan.777256.xyz}"
 ID="${ID:-GNW2KH}"
 URL="${BASE%/}/d/${ID}"
 
-# 获取最终跳转地址
+# 获取最终跳转地址（处理可能的 HTTP->HTTPS 重定向）
 FINAL="$(curl -sS -L -o /dev/null -w "%{url_effective}" --max-time 15 "$URL" || true)"; [ -n "$FINAL" ] || FINAL="$URL"
 
-echo "Target: $FINAL"
+echo "URL=$URL"
+echo "FINAL=$FINAL"
 echo
 
-echo "[1] HEAD 请求 (预期: 200/206)"
-curl -sS -I --max-time 15 "$FINAL" | egrep -i "HTTP/|content-type|content-disposition|accept-ranges" || true
+echo "== 1. HEAD 请求 (应返回 200/206，不应是 405) =="
+curl -sS -I --max-time 15 "$FINAL" | egrep -i "HTTP/|content-type|content-disposition|accept-ranges|content-range|content-length|x-content-type-options" || true
 echo
 
-echo "[2] Default GET (预期: inline for media)"
-curl -sS -L -D - -o /dev/null --max-time 20 "$FINAL" | egrep -i "content-disposition:" || true
+echo "== 2. Default GET (可预览类型应 inline; 不可预览应 attachment) =="
+curl -sS -L -D - -o /dev/null --max-time 20 "$FINAL" | egrep -i "HTTP/|content-type:|content-disposition:|accept-ranges:|content-range:|content-length:|x-content-type-options:" || true
 echo
 
-echo "[3] Force Download (预期: attachment)"
-curl -sS -L -D - -o /dev/null --max-time 20 "$FINAL?download=1" | egrep -i "content-disposition:" || true
+echo "== 3. GET ?download=1 (必须 attachment) =="
+curl -sS -L -D - -o /dev/null --max-time 20 "$FINAL?download=1" | egrep -i "HTTP/|content-type:|content-disposition:" || true
 echo
 
-echo "[4] Range Request (预期: 206 + Content-Range)"
-curl -sS -L -D - -o /dev/null --max-time 20 -H "Range: bytes=0-1023" "$FINAL" | egrep -i "HTTP/|content-range:" || true
+echo "== 4. Range bytes=0-1023 (音视频应 206 + Content-Range) =="
+curl -sS -L -D - -o /dev/null --max-time 20 -H "Range: bytes=0-1023" "$FINAL" | egrep -i "HTTP/|accept-ranges:|content-range:|content-length:" || true
 '
 
-</details>
-❓ 常见问题 (FAQ)
-<details>
-<summary><strong>Q: 登录后循环跳转或报 500 错误？</strong></summary>
- * 密码字符：系统现已支持含特殊字符（中文、Emoji）的强密码。
- * Cookie：旧版本 Cookie 可能导致冲突，请尝试清除浏览器 Cookie 或使用无痕模式。
- * 重置数据：如遇顽固报错，可尝试重置数据卷（数据将丢失）：
-   docker rm -f tgstate; docker volume rm tgstate-data; docker volume create tgstate-data
-</details>
-<details>
-<summary><strong>Q: 删除文件后列表未刷新？</strong></summary>
-删除为异步操作，受网络延迟影响。若刷新后文件仍在，请检查 Bot 是否具有频道管理员权限。
-</details>
-<details>
-<summary><strong>Q: 分享链接显示为 127.0.0.1？</strong></summary>
-前端会根据您的访问地址动态生成链接。请通过公网 IP 或域名访问网页，分享链接将自动更正。
-</details>
-<details>
-<summary><strong>Q: 点击“复制链接”无反应？</strong></summary>
-浏览器安全策略限制了非 HTTPS 环境下的剪贴板 API 调用。建议配置 HTTPS 反向代理以获得完整体验。
-</details>
-⚠️ 免责声明
-> 请务必仔细阅读
-> 
-本项目基于 Telegram Bot API 实现，仅供 个人学习与技术研究 使用。
- * 合规性：Telegram 条款对将 Bot 用于“外部云存储服务”存在限制。
- * 禁止用途：
-   * ❌ 严禁用于存储/分发盗版、色情、暴力等违法违规内容。
-   * ❌ 严禁作为公共网盘或商业存储服务对外开放。
- * 风险自担：使用者需自行承担因使用本项目导致的数据丢失、账号封禁或法律风险。
-<div align="center">
-License MIT | Built with ❤️ by Buyi
-</div>
+✅ 验收通过标准：
 
+HEAD：200（或 302 后 200），且包含 Content-Type 等头
+
+Default：PDF/图片应 inline
+
+Download：?download=1 时必须 attachment
+
+Range：音视频应 206 Partial Content 且有 Content-Range
+
+
+
+---
+
+免责声明与合规使用（重要）
+
+本项目基于 Telegram Bot + 频道/群组 实现个人文件管理/分享能力：
+
+Telegram 的 Bot 平台条款对“用于云存储类外部服务”存在限制与风险
+
+本项目 仅供学习与个人用途
+
+严禁用于以下场景：
+
+侵权内容（盗版资源、未授权转载/传播等）
+
+任何违法用途
+
+公开资源分发/公共下载站
+
+商业网盘/对外提供存储服务
+
+
+
+使用本项目产生的任何后果由使用者自行承担；开发者不对由此造成的封号、数据丢失、法律风险等负责。
+
+
+---
+
+📄 License
+
+MIT License
